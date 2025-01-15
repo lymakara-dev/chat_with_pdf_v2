@@ -1,110 +1,74 @@
-<script setup lang="ts" name="ChatComponent">
-import { ref } from 'vue'
-
-import BrandOne from '@/assets/images/brand/brand-01.svg'
-import BrandTwo from '@/assets/images/brand/brand-02.svg'
-import BrandThree from '@/assets/images/brand/brand-03.svg'
-import BrandFour from '@/assets/images/brand/brand-04.svg'
-import BrandFive from '@/assets/images/brand/brand-05.svg'
-
-const brandData = ref([
-  {
-    logo: BrandOne,
-    name: 'Google',
-    visitors: 3.5,
-    revenues: '5,768',
-    sales: 590,
-    conversion: 4.8
-  },
-  {
-    logo: BrandTwo,
-    name: 'Twitter',
-    visitors: 2.2,
-    revenues: '4,635',
-    sales: 467,
-    conversion: 4.3
-  },
-  {
-    logo: BrandThree,
-    name: 'Github',
-    visitors: 2.1,
-    revenues: '4,290',
-    sales: 420,
-    conversion: 3.7
-  },
-  {
-    logo: BrandFour,
-    name: 'Vimeo',
-    visitors: 1.5,
-    revenues: '3,580',
-    sales: 389,
-    conversion: 2.5
-  },
-  {
-    logo: BrandFive,
-    name: 'Facebook',
-    visitors: 3.5,
-    revenues: '6,768',
-    sales: 390,
-    conversion: 4.2
-  }
-])
-</script>
+<script setup lang="ts" name="ChatComponent"></script>
 
 <template>
   <div
-    class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
+    class="flex flex-col items-center justify-center w-full min-h-screen bg-gray-100 text-gray-800 p-10"
   >
-    <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">Top Channels</h4>
+    <!-- Component Start -->
+    <div class="flex flex-col grow w-full max-w-4xl bg-white shadow-xl rounded-lg overflow-hidden">
+      <div class="flex flex-col grow h-0 p-4 overflow-auto">
+        <div class="flex w-full mt-2 space-x-3 justify-end">
+          <div class="">
+            <div class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
+              <p class="text-sm">Hello</p>
+            </div>
+            <span class="text-xs text-gray-500 leading-none">1 min ago</span>
+          </div>
+          <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+        </div>
+        <div class="flex w-full mt-2 space-x-3">
+          <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+          <div class="">
+            <div class="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
+              <p class="text-sm">Hello! How can I assist you today?</p>
+            </div>
+            <span class="text-xs text-gray-500 leading-none">2 min ago</span>
+          </div>
+        </div>
+        <!-- User Message -->
+        <div class="flex w-full mt-2 space-x-3 justify-end">
+          <div class="">
+            <div class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
+              <p class="text-sm">Can you explain the concept of neural networks from the PDF?</p>
+            </div>
+            <span class="text-xs text-gray-500 leading-none">1 min ago</span>
+          </div>
+          <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+        </div>
 
-    <div class="flex flex-col">
-      <div class="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
-        <div class="p-2.5 xl:p-5">
-          <h5 class="text-sm font-medium uppercase xsm:text-base">Source</h5>
-        </div>
-        <div class="p-2.5 text-center xl:p-5">
-          <h5 class="text-sm font-medium uppercase xsm:text-base">Visitors</h5>
-        </div>
-        <div class="p-2.5 text-center xl:p-5">
-          <h5 class="text-sm font-medium uppercase xsm:text-base">Revenues</h5>
-        </div>
-        <div class="hidden p-2.5 text-center sm:block xl:p-5">
-          <h5 class="text-sm font-medium uppercase xsm:text-base">Sales</h5>
-        </div>
-        <div class="hidden p-2.5 text-center sm:block xl:p-5">
-          <h5 class="text-sm font-medium uppercase xsm:text-base">Conversion</h5>
+        <!-- Bot Response -->
+        <div class="flex w-full mt-2 space-x-3">
+          <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+          <div class="max-w-1/2">
+            <div class="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
+              <p class="text-sm">
+                Neural networks are a series of algorithms that attempt to recognize underlying
+                relationships in a set of data through a process that mimics the way the human brain
+                operates. They are used in a variety of applications, including image and speech
+                recognition, and are a key component of deep learning algorithms.
+              </p>
+              <p class="text-sm mt-2">
+                For a detailed explanation, please refer to the PDF document attached below.
+              </p>
+              <a href="/path/to/neural_networks.pdf" class="text-blue-500 underline mt-2"
+                >View PDF</a
+              >|
+              <a href="/path/to/neural_networks.pdf" class="text-blue-500 underline mt-2"
+                >Download PDF</a
+              >
+            </div>
+            <span class="text-xs text-gray-500 leading-none">Just now</span>
+          </div>
         </div>
       </div>
-
-      <div
-        v-for="(brand, key) in brandData"
-        :key="key"
-        :class="`grid grid-cols-3 sm:grid-cols-5 ${
-          key === brandData.length - 1 ? '' : 'border-b border-stroke dark:border-strokedark'
-        }`"
-      >
-        <div class="flex items-center gap-3 p-2.5 xl:p-5">
-          <div class="flex-shrink-0">
-            <img :src="brand.logo" alt="Brand" />
-          </div>
-          <p class="hidden text-black dark:text-white sm:block">{{ brand.name }}</p>
-        </div>
-
-        <div class="flex items-center justify-center p-2.5 xl:p-5">
-          <p class="text-black dark:text-white">{{ brand.visitors }}K</p>
-        </div>
-
-        <div class="flex items-center justify-center p-2.5 xl:p-5">
-          <p class="text-meta-3">${{ brand.revenues }}</p>
-        </div>
-
-        <div class="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-          <p class="text-black dark:text-white">{{ brand.sales }}</p>
-        </div>
-
-        <div class="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-          <p class="text-meta-5">{{ brand.conversion }}%</p>
-        </div>
+      <!-- Input Area -->
+      <div class="bg-gray-200 p-2 flex items-center">
+        <input
+          class="flex items-center h-10 w-full rounded-xl px-3 text-sm"
+          type="text"
+          placeholder="Type your message…"
+        />
+        <button class="ml-2 bg-blue-600 text-white px-4 py-2 rounded-lg">Send</button>
       </div>
     </div>
   </div>

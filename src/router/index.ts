@@ -13,7 +13,7 @@ import TablesView from '@/views/TablesView.vue'
 import AlertsView from '@/views/UiElements/AlertsView.vue'
 import ButtonsView from '@/views/UiElements/ButtonsView.vue'
 import UploadsView from '@/views/UploadsView.vue'
-import ChatWithPDF from '@/components/Chats/ChatWithPDF.vue'
+import ChatsView from '@/views/ChatsView.vue'
 
 const routes = [
   {
@@ -75,7 +75,7 @@ const routes = [
   {
     path: '/chats',
     name: 'chats',
-    component: ChatWithPDF,
+    component: ChatsView,
     meta: {
       title: 'Chats'
     }

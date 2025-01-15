@@ -1,10 +1,43 @@
 <script setup lang="ts">
-import DropdownSelect from './DropdownSelect.vue'
+import { ref } from 'vue'
+import DropdownSelect from '@/components/uploads/DropdownSelect.vue'
+
+const departmentOptions = ['Sale', 'Loan', 'Credit', 'Finance', 'Marketing']
+const documentTypeOptions = ['Memo', 'SOP', 'Policy', 'Procedure', 'Form']
+
+const selectedDepartments = ref([])
+const selectedDocumentTypes = ref([])
+
+const handleDepartmentSelection = (selected) => {
+  selectedDepartments.value = selected
+}
+
+const handleDocumentTypeSelection = (selected) => {
+  selectedDocumentTypes.value = selected
+}
+
+const files = ref<File[]>([])
+const previews = ref<string[]>([])
+
+const handleFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement
+  if (input.files) {
+    files.value = Array.from(input.files)
+    previews.value = files.value.map(file => URL.createObjectURL(file))
+  }
+}
+
+const deleteFile = (index: number) => {
+  files.value.splice(index, 1)
+  previews.value.splice(index, 1)
+}
+
 </script>
+
 <template>
   <div class="flex flex-row gap-4">
     <div class="flex flex-col justify-center items-center gap-4 grow">
-      <label for="file" class="font-bold text-2xl">Please upload you file</label>
+      <label for="file" class="font-bold text-2xl">Please upload your file</label>
       <div class="flex items-center justify-center w-full">
         <label
           for="dropzone-file"
@@ -33,8 +66,16 @@ import DropdownSelect from './DropdownSelect.vue'
               SVG, PNG, JPG or GIF (MAX. 800x400px)
             </p>
           </div>
-          <input id="dropzone-file" type="file" class="hidden" />
+          <input id="dropzone-file" type="file" class="hidden" multiple @change="handleFileChange" />
         </label>
+      </div>
+      <div class="flex flex-wrap gap-4 mt-4">
+        <div v-for="(preview, index) in previews" :key="index" class="relative w-32 h-32 border border-gray-300 rounded-lg overflow-hidden">
+          <img :src="preview" alt="Preview" class="w-full h-full object-cover" />
+          <button @click="deleteFile(index)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1">
+            &times;
+          </button>
+        </div>
       </div>
     </div>
 
@@ -42,13 +83,19 @@ import DropdownSelect from './DropdownSelect.vue'
     <div class="flex flex-col gap-4 items-center border-gray-300 border-2 rounded-lg p-4">
       <div class="grow flex flex-col gap-4">
         <h1 class="text-2xl font-bold">Input File Info</h1>
+        <p class="text-base font-normal">Select Department</p>
         <DropdownSelect
-          -options="Departement Option"
-          -option1="Sale"
-          -option2="Loan"
-          -option3="Credit"
+          :options="departmentOptions"
+          v-model:selected="selectedDepartments"
+          @update:selected="handleDepartmentSelection"
         />
-        <DropdownSelect -options="Document Type" -option1="Memo" -option2="SOP" />
+        
+        <p class="text-base font-normal">Select Document Type</p>
+        <DropdownSelect
+          :options="documentTypeOptions"
+          v-model:selected="selectedDocumentTypes"
+          @update:selected="handleDocumentTypeSelection"
+        />
       </div>
       <button
         type="button"
@@ -59,4 +106,3 @@ import DropdownSelect from './DropdownSelect.vue'
     </div>
   </div>
 </template>
-border-2 rounded-lg p-4

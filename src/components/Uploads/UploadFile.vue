@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DropdownSelect from '@/components/uploads/DropdownSelect.vue'
+import axios from 'axios'
 
 const departmentOptions = ['Sale', 'Loan', 'Credit', 'Finance', 'Marketing']
 const documentTypeOptions = ['Memo', 'SOP', 'Policy', 'Procedure', 'Form']
 
 const selectedDepartments = ref([])
-const selectedDocumentTypes = ref([])
+const selectedDocumentTypes = ref<string[]>([])
 
 const handleDepartmentSelection = (selected) => {
   selectedDepartments.value = selected
 }
 
-const handleDocumentTypeSelection = (selected) => {
+const handleDocumentTypeSelection = (selected: string[]) => {
   selectedDocumentTypes.value = selected
 }
 
@@ -22,8 +23,9 @@ const previews = ref<string[]>([])
 const handleFileChange = (event: Event) => {
   const input = event.target as HTMLInputElement
   if (input.files) {
-    files.value = Array.from(input.files)
-    previews.value = files.value.map(file => URL.createObjectURL(file))
+    const selectedFiles = Array.from(input.files).filter((file) => file.type === 'application/pdf')
+    files.value = selectedFiles
+    previews.value = selectedFiles.map((file) => URL.createObjectURL(file))
   }
 }
 
@@ -32,6 +34,26 @@ const deleteFile = (index: number) => {
   previews.value.splice(index, 1)
 }
 
+const uploadFiles = async () => {
+  const formData = new FormData()
+  files.value.forEach((file) => {
+    formData.append('files', file)
+  })
+  formData.append('documentTypes', JSON.stringify(selectedDocumentTypes.value))
+
+  try {
+    const response = await axios.post('http://127.0.0.1:5000/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    alert('Files uploaded successfully')
+    console.log(response.data)
+  } catch (error) {
+    console.error('Error uploading files:', error)
+    alert('Error uploading files. Please try again.')
+  }
+}
 </script>
 
 <template>
@@ -62,17 +84,28 @@ const deleteFile = (index: number) => {
             <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
               <span class="font-semibold">Click to upload</span> or drag and drop
             </p>
-            <p class="text-xs text-gray-500 dark:text-gray-400">
-              SVG, PNG, JPG or GIF (MAX. 800x400px)
-            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">PDF</p>
           </div>
-          <input id="dropzone-file" type="file" class="hidden" multiple @change="handleFileChange" />
+          <input
+            id="dropzone-file"
+            type="file"
+            class="hidden"
+            multiple
+            @change="handleFileChange"
+          />
         </label>
       </div>
       <div class="flex flex-wrap gap-4 mt-4">
-        <div v-for="(preview, index) in previews" :key="index" class="relative w-32 h-32 border border-gray-300 rounded-lg overflow-hidden">
+        <div
+          v-for="(preview, index) in previews"
+          :key="index"
+          class="relative w-32 h-32 border border-gray-300 rounded-lg overflow-hidden"
+        >
           <img :src="preview" alt="Preview" class="w-full h-full object-cover" />
-          <button @click="deleteFile(index)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1">
+          <button
+            @click="deleteFile(index)"
+            class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+          >
             &times;
           </button>
         </div>
@@ -89,7 +122,7 @@ const deleteFile = (index: number) => {
           v-model:selected="selectedDepartments"
           @update:selected="handleDepartmentSelection"
         />
-        
+
         <p class="text-base font-normal">Select Document Type</p>
         <DropdownSelect
           :options="documentTypeOptions"
@@ -100,6 +133,7 @@ const deleteFile = (index: number) => {
       <button
         type="button"
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+        @click="uploadFiles"
       >
         Upload
       </button>

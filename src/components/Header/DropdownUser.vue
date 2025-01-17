@@ -14,10 +14,11 @@ onClickOutside(target, () => {
 
 const signOut = async () => {
   try {
-    await axios.post('http://127.0.0.1:5000/logout')
+    await axios.post('http://127.0.0.1:5000/logout', {}, { withCredentials: true })
     router.push('/auth/signin')
   } catch (error) {
     console.error('Error signing out:', error)
+    alert('Error signing out. Please try again.')
   }
 }
 </script>

@@ -38,6 +38,29 @@ const handleDropdownClick = () => {
     dropdownOpen.value = !dropdownOpen.value
   }
 }
+
+const username = ref('')
+const password = ref('')
+const errorMessage = ref('')
+
+const handleSignIn = async () => {
+  try {
+    const response = await axios.post('http://127.0.0.1:5000/login', {
+      username: username.value,
+      password: password.value
+    })
+    if (response.data.message) {
+      // Redirect to dashboard or home page after successful login
+      router.push('/dashboard')
+    }
+  } catch (error) {
+    if (error.response && error.response.data.error) {
+      errorMessage.value = error.response.data.error
+    } else {
+      errorMessage.value = 'An error occurred. Please try again.'
+    }
+  }
+}
 </script>
 
 <template>
@@ -47,8 +70,8 @@ const handleDropdownClick = () => {
     <!-- Breadcrumb End -->
 
     <DefaultAuthCard subtitle="Start for free" title="Sign In to TailAdmin">
-      <form>
-        <InputGroup label="Email" type="email" placeholder="Enter your email">
+      <form @submit.prevent="handleSignIn">
+        <InputGroup label="Email" type="email" placeholder="Enter your email" v-model="username">
           <svg
             class="fill-current"
             width="22"
@@ -66,7 +89,12 @@ const handleDropdownClick = () => {
           </svg>
         </InputGroup>
 
-        <InputGroup label="Password" type="password" placeholder="6+ Characters, 1 Capital letter">
+        <InputGroup
+          label="Password"
+          type="password"
+          placeholder="6+ Characters, 1 Capital letter"
+          v-model="password"
+        >
           <svg
             class="fill-current"
             width="22"

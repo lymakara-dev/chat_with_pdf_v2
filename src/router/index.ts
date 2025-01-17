@@ -16,14 +16,15 @@ import UploadsView from '@/views/UploadsView.vue'
 import ChatsView from '@/views/ChatsView.vue'
 
 const routes = [
-  {
-    path: '/',
-    name: 'eCommerce',
-    component: ECommerceView,
-    meta: {
-      title: 'eCommerce Dashboard'
-    }
-  },
+  // {
+  //   path: '/',
+  //   name: 'eCommerce',
+  //   component: ECommerceView,
+  //   meta: {
+  //     title: 'eCommerce Dashboard'
+  //   }
+  // },
+  { path: '/', redirect: '/uploads' },
   {
     path: '/calendar',
     name: 'calendar',
@@ -139,7 +140,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  document.title = `Vue.js ${to.meta.title} | TailAdmin - Vue.js Tailwind CSS Dashboard Template`
+  document.title = `${to.meta.title}`
   next()
 })
 

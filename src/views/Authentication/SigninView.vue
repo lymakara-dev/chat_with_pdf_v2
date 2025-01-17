@@ -5,8 +5,39 @@ import BreadcrumbDefault from '@/components/Breadcrumbs/BreadcrumbDefault.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { onClickOutside } from '@vueuse/core'
+import axios from 'axios'
 
 const pageTitle = ref('Sign In')
+const target = ref(null)
+const dropdownOpen = ref(false)
+const router = useRouter()
+
+onClickOutside(target, () => {
+  dropdownOpen.value = false
+})
+
+// Mock authentication status
+const isAuthenticated = ref(true) // Change this to your actual authentication logic
+
+const signOut = async () => {
+  try {
+    const response = await axios.post('http://127.0.0.1:5000/logout')
+    console.log('Sign-out response:', response)
+    router.push('/auth/signin')
+  } catch (error) {
+    console.error('Error signing out:', error)
+  }
+}
+
+const handleDropdownClick = () => {
+  if (!isAuthenticated.value) {
+    router.push('/auth/signin')
+  } else {
+    dropdownOpen.value = !dropdownOpen.value
+  }
+}
 </script>
 
 <template>
@@ -113,4 +144,88 @@ const pageTitle = ref('Sign In')
       </form>
     </DefaultAuthCard>
   </DefaultLayout>
+
+  <div class="relative" ref="target">
+    <router-link class="flex items-center gap-4" to="#" @click.prevent="handleDropdownClick">
+      <span v-if="isAuthenticated" class="hidden text-right lg:block">
+        <span class="block text-sm font-medium text-black dark:text-white">Thomas Anree</span>
+        <span class="block text-xs font-medium">UX Designer</span>
+      </span>
+      <span v-else class="hidden text-right lg:block">
+        <span class="block text-sm font-medium text-black dark:text-white">Sign In</span>
+      </span>
+    </router-link>
+
+    <div
+      v-if="dropdownOpen && isAuthenticated"
+      class="absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+    >
+      <ul class="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
+        <li>
+          <router-link
+            to="/profile"
+            class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+          >
+            <svg
+              class="fill-current"
+              width="22"
+              height="22"
+              viewBox="0 0 22 22"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11 6.32498C8.42189 6.32498 6.32501 8.42186 6.32501 11C6.32501 13.5781 8.42189 15.675 11 15.675C13.5781 15.675 15.675 13.5781 15.675 11C15.675 8.42186 13.5781 6.32498 11 6.32498ZM11 14.1281C9.28126 14.1281 7.87189 12.7187 7.87189 11C7.87189 9.28123 9.28126 7.87186 11 7.87186C12.7188 7.87186 14.1281 9.28123 14.1281 11C14.1281 12.7187 12.7188 14.1281 11 14.1281Z"
+                fill=""
+              />
+            </svg>
+            My Profile
+          </router-link>
+        </li>
+        <li>
+          <router-link
+            to="/pages/settings"
+            class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+          >
+            <svg
+              class="fill-current"
+              width="22"
+              height="22"
+              viewBox="0 0 22 22"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11 6.32498C8.42189 6.32498 6.32501 8.42186 6.32501 11C6.32501 13.5781 8.42189 15.675 11 15.675C13.5781 15.675 15.675 13.5781 15.675 11C15.675 8.42186 13.5781 6.32498 11 6.32498ZM11 14.1281C9.28126 14.1281 7.87189 12.7187 7.87189 11C7.87189 9.28123 9.28126 7.87186 11 7.87186C12.7188 7.87186 14.1281 9.28123 14.1281 11C14.1281 12.7187 12.7188 14.1281 11 14.1281Z"
+                fill=""
+              />
+            </svg>
+            Settings
+          </router-link>
+        </li>
+        <li>
+          <router-link
+            to="/auth/signin"
+            class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+            @click.prevent="signOut"
+          >
+            <svg
+              class="fill-current"
+              width="22"
+              height="22"
+              viewBox="0 0 22 22"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11 6.32498C8.42189 6.32498 6.32501 8.42186 6.32501 11C6.32501 13.5781 8.42189 15.675 11 15.675C13.5781 15.675 15.675 13.5781 15.675 11C15.675 8.42186 13.5781 6.32498 11 6.32498ZM11 14.1281C9.28126 14.1281 7.87189 12.7187 7.87189 11C7.87189 9.28123 9.28126 7.87186 11 7.87186C12.7188 7.87186 14.1281 9.28123 14.1281 11C14.1281 12.7187 12.7188 14.1281 11 14.1281Z"
+                fill=""
+              />
+            </svg>
+            Sign Out
+          </router-link>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>

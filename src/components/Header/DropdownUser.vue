@@ -1,13 +1,25 @@
 <script setup lang="ts">
-import { onClickOutside } from '@vueuse/core'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { onClickOutside } from '@vueuse/core'
+import axios from 'axios'
 
 const target = ref(null)
 const dropdownOpen = ref(false)
+const router = useRouter()
 
 onClickOutside(target, () => {
   dropdownOpen.value = false
 })
+
+const signOut = async () => {
+  try {
+    await axios.post('http://127.0.0.1:5000/logout')
+    router.push('/auth/signin')
+  } catch (error) {
+    console.error('Error signing out:', error)
+  }
+}
 </script>
 
 <template>
@@ -124,6 +136,7 @@ onClickOutside(target, () => {
       </ul>
       <button
         class="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+        @click="signOut"
       >
         <svg
           class="fill-current"
